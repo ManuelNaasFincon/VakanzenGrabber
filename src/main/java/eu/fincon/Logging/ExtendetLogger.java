@@ -3,6 +3,7 @@ import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 import com.relevantcodes.extentreports.NetworkMode;
+import eu.fincon.Datenverarbeitung.Config;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,9 +31,10 @@ public class ExtendetLogger {
     // =====================================================================
     public static void setup(String pstrName)
     {
+        String strPfad = Config.ReportZielLaden()+"ext_"+strLogFilePath;
         logger = Logger.getLogger(pstrName);
-
-        Extendlogger = new ExtentReports("C:\\Users\\mnaas\\IdeaProjects\\VakanzenGrabber\\ext_"+strLogFilePath, NetworkMode.OFFLINE);
+        System.out.println("Zielordner Report: " + strPfad);
+        Extendlogger = new ExtentReports(strPfad, NetworkMode.OFFLINE);
         ExtendTestLogParent = Extendlogger.startTest(pstrName);
 
         createFileHandler();
@@ -129,6 +131,8 @@ public class ExtendetLogger {
     // =====================================================================
     public static void LogEntry(LogStatus plsStatus, String pstrMessage)
     {
+        if (ExtendTestLog==null)
+            return;
         String strClassName = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).getCallerClass().toString();
         String strMethodName = Thread.currentThread().getStackTrace()[2].getMethodName();
 

@@ -26,121 +26,6 @@ public class InserateVerwalten {
     List<Inserat> lInserate;
 
     // Database Functions
-    private Connection connectToSQLLiteDatabase()
-    {
-        // SQLite connection string
-        String url = Config.strDatabasePfad + Config.strDatabaseName;
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(url);
-        } catch (SQLException e) {
-            ExtendetLogger.LogEntry(LogStatus.ERROR, "Failed to connect to Database - " + url);
-        }
-        return conn;
-    }
-    private void dropExistingTable(Connection conn, String pstrTabellenName)
-    {
-        String sql = "DROP TABLE IF EXISTS " + pstrTabellenName;
-        try
-        {
-            Statement stmt = conn.createStatement();
-            // create a new table
-            stmt.execute(sql);
-            ExtendetLogger.LogEntry(LogStatus.INFO, sql);
-            conn.commit();
-        } catch (SQLException e) {
-            ExtendetLogger.LogEntry(LogStatus.ERROR, "Failed to Drop Table - " + sql);
-            ExtendetLogger.LogEntry(LogStatus.ERROR, e.getMessage());
-        }
-    }
-    private String createNewTable(Connection conn, String pstrTabellenName)
-    {
-        String url = Config.strDatabasePfad + Config.strDatabaseName;
-        String strTabellenName = pstrTabellenName + LocalDateTime.now().format(DateTimeFormatter.ofPattern("_yyyy_MM_dd"));
-        dropExistingTable(conn, strTabellenName);
-        // SQL statement for creating a new table
-        String sql = Inserat.getSQLiteCreateTable(strTabellenName);
-
-        try
-        {
-             Statement stmt = conn.createStatement();
-            // create a new table
-            stmt.execute(sql);
-            ExtendetLogger.LogEntry(LogStatus.INFO, sql);
-            conn.commit();
-        } catch (SQLException e) {
-            ExtendetLogger.LogEntry(LogStatus.ERROR, "Failed to create Table - " + sql);
-            ExtendetLogger.LogEntry(LogStatus.ERROR, e.getMessage());
-        }
-        return strTabellenName;
-    }
-    public void insertIntoSQLite(Inserat piInserat, Connection pConnection, String pstrTabellenname, int pintID) {
-        PreparedStatement stmt = null;
-
-        //String sql = "INSERT INTO "+ pstrTabellenname +" (" + Inserat.getSQLiteSpalten() + ") VALUES(" + piInserat.getInseratStringSQLite() + ")";
-
-        String[] strsplittedValues = piInserat.getInseratStringSQLite().split("\",\"");
-        String sql = getBaseInsertString(pstrTabellenname, strsplittedValues);
-        String ausgabe = "";
-
-        ExtendetLogger.LogEntry(LogStatus.INFO, "Creating SQL Insert Statement");
-        try {
-            stmt = pConnection.prepareStatement(sql);
-        } catch (SQLException e) {
-            ExtendetLogger.LogEntry(LogStatus.FATAL, "Error preparing Statement - " + sql);
-            System.out.println("Error preparing Statement - " + sql);
-            e.printStackTrace();
-        }
-        ExtendetLogger.LogEntry(LogStatus.INFO, "Setting Insert Values in Statement");
-        for (int i=1; i<=strsplittedValues.length;i++)
-        {
-            ausgabe = "Replacing " + i + " with - " + strsplittedValues[i-1];
-            System.out.println(ausgabe);
-            ExtendetLogger.LogEntry(LogStatus.INFO, ausgabe);
-            try {
-                stmt.setString(i, strsplittedValues[i-1].trim());
-            } catch (SQLException e) {
-                ExtendetLogger.LogEntry(LogStatus.FATAL, "Error setting String # " + sql + " to " + strsplittedValues[i-1].trim());
-                System.out.println("Error setting String # " + sql + " to " + strsplittedValues[i-1].trim());
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            ExtendetLogger.LogEntry(LogStatus.INFO, "Insert Statement - " + stmt.toString());
-            System.out.println("Insert Statement - " + stmt.toString());
-            stmt.execute();
-            ExtendetLogger.LogEntry(LogStatus.PASS, "Insert Statement Executed");
-
-        } catch (SQLException e) {
-            ExtendetLogger.LogEntry(LogStatus.ERROR, "Failed to Execute Insert Statement - " + sql);
-            ExtendetLogger.LogEntry(LogStatus.ERROR, e.getMessage());
-            e.printStackTrace();
-        }
-
-        try {
-            stmt.close();
-            pConnection.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    @NotNull
-    private String getBaseInsertString(String pstrTabellenname, String[] strsplittedValues) {
-        int intNumberOfValues = strsplittedValues.length;
-        String strValuesPlaceHolder = "";
-        for (int i=0;i<intNumberOfValues;i++)
-        {
-            if (i>0)
-                strValuesPlaceHolder = strValuesPlaceHolder + ",?";
-            else
-                strValuesPlaceHolder = "?";
-        }
-        return "INSERT INTO "+ pstrTabellenname +" (" + Inserat.getSQLiteSpalten() + ") VALUES("+strValuesPlaceHolder+")";
-    }
 
     // End Database Functions
     public InserateVerwalten(List<Inserat> piwInserate)
@@ -160,7 +45,7 @@ public class InserateVerwalten {
     }
     private void sqliteOutput(String pstrTabellenName)
     {
-        Connection conn = this.connectToSQLLiteDatabase();
+        Connection conn = DatenbankVerwalten.connectToSQLLiteDatabase();
         try {
             // Damit wird die AutoCommit deaktiviert
             // Dieser führte dazu, dass mit jedem Statement ein Commit durchgeführt wurde - Was zu einer Exception geführt hat
@@ -171,12 +56,12 @@ public class InserateVerwalten {
         {
             ExtendetLogger.LogEntry(LogStatus.INFO, "Failed to Set AutoCommitMode");
         }
-        pstrTabellenName = createNewTable(conn, pstrTabellenName);
+        pstrTabellenName = DatenbankVerwalten.createNewTable(conn, pstrTabellenName, true);
         ExtendetLogger.LogEntry(LogStatus.INFO, "Inserate werden gesichert... ");
         int intIndex = 1;
         for (Inserat iInserat:lInserate) {
             ExtendetLogger.LogEntry(LogStatus.INFO, "Inserat sichern: " + iInserat.toString());
-            insertIntoSQLite(iInserat, conn, pstrTabellenName, intIndex);
+            DatenbankVerwalten.insertIntoSQLite(iInserat, conn, pstrTabellenName, intIndex);
             intIndex++;
         }
     }

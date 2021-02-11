@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <eu.fincon.Vakanzengrabber>
+	<ZielOrdnerReport>C:/Users/mnaas/IdeaProjects/VakanzenGrabber/</ZielOrdnerReport>
 	<Browser>Chrome</Browser>
 	<LogLevel>All</LogLevel>
 	<Headless>nein</Headless>
 	<Speicherziel>sqlite</Speicherziel>
 	<DatabaseName>Vakanzengrabber.db</DatabaseName>
 	<DatabasePfad>jdbc:sqlite:C://Users/mnaas/IdeaProjects/VakanzenGrabber/</DatabasePfad>
+	<DatabaseTabellenname>Vakanzengrabber</DatabaseTabellenname>
 	<Seiten>
 		<Seite name="FreelancerMap" url="http://www.freelancermap.de" benutzername="Manuel.Naas@fincon.eu" passwort="start123#"/>
 		<Seite name="FreelanceDE" url="http://www.freelance.de" benutzername="Manuel.Naas@fincon.eu" passwort="start123#"/>

@@ -23,6 +23,8 @@ public class Config {
     public static Level lLogLevel;
     public static String strDatabasePfad;
     public static String strDatabaseName;
+    public static String strZielTabellenName;
+    public static String strZielOrdnerReport;
     public static boolean blnHeadless = true;
     public static void init()
     {
@@ -31,10 +33,15 @@ public class Config {
         DatabaseLaden();
         WebseitenlisteLaden();
         SpeicherzielLaden();
+        ReportZielLaden();
         setBrowser();
         setLogLevel();
         setHeadless();
         ExtendetLogger.AppendChild();
+    }
+    public static String ReportZielLaden() {
+        strZielOrdnerReport = getWertAusConfig("", "ZielOrdnerReport");
+        return strZielOrdnerReport;
     }
     public static void SpeicherzielLaden()
     {
@@ -59,6 +66,8 @@ public class Config {
         ExtendetLogger.LogEntry(LogStatus.INFO, "Database Pfad wurde geladen - " + strDatabasePfad);
         strDatabaseName = getWertAusConfig("", "DatabaseName");
         ExtendetLogger.LogEntry(LogStatus.INFO, "Database Name wurde geladen - " + strDatabaseName);
+        strZielTabellenName = getWertAusConfig("", "DatabaseTabellenname");
+        ExtendetLogger.LogEntry(LogStatus.INFO, "Zieltabellenname wurde geladen - " + strZielTabellenName);
     }
     public static void WebseitenlisteLaden()
     {

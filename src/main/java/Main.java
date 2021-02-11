@@ -1,8 +1,5 @@
 import com.relevantcodes.extentreports.LogStatus;
-import eu.fincon.Datenverarbeitung.Config;
-import eu.fincon.Datenverarbeitung.Datentreiber;
-import eu.fincon.Datenverarbeitung.Testdatum;
-import eu.fincon.Datenverarbeitung.Webseite;
+import eu.fincon.Datenverarbeitung.*;
 import eu.fincon.Logging.ExtendetLogger;
 
 import java.util.List;
@@ -46,8 +43,15 @@ public class Main {
                 wWebseite.VakanzenObject.seiteSchließen();
                 ExtendetLogger.AppendChild();
             }
-            break;
         }
+        //=====================================================================
+        // Datenbank Zieltabelle aktualisieren
+        // =====================================================================
+        /*
+        ToDo Funktion befindet sich aktuell im Aufbau
+        if (!DatenbankVerwalten.ZieltabelleVorbereiten())
+            ExtendetLogger.LogEntry(LogStatus.FATAL,"Bei dem erzeugen der Zieltabelle ist ein Fehler aufgetreten");
+         */
         //=====================================================================
         // Logger finish
         // =====================================================================
