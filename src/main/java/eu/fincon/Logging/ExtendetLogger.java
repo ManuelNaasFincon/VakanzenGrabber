@@ -32,13 +32,13 @@ public class ExtendetLogger {
     public static void setup(String pstrName)
     {
         String strPfad = Config.ReportZielLaden()+"ext_"+strLogFilePath;
-        //logger = Logger.getLogger(pstrName);
         System.out.println("Zielordner Report: " + strPfad);
         Extendlogger = new ExtentReports(strPfad, NetworkMode.OFFLINE);
         ExtendTestLogParent = Extendlogger.startTest(pstrName);
-
+        // Der "alte" Logger wird nicht mehr genutzt, deshalb auskommentiert
+        //logger = Logger.getLogger(pstrName);
         //createFileHandler();
-        setLogLevel(Level.ALL);
+        //setLogLevel(Level.ALL);
     }
     //=====================================================================
     // Schließt den Logger ab
