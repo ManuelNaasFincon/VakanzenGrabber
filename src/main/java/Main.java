@@ -47,11 +47,10 @@ public class Main {
         //=====================================================================
         // Datenbank Zieltabelle aktualisieren
         // =====================================================================
-        /*
-        ToDo Funktion befindet sich aktuell im Aufbau
+
         if (!DatenbankVerwalten.ZieltabelleVorbereiten())
             ExtendetLogger.LogEntry(LogStatus.FATAL,"Bei dem erzeugen der Zieltabelle ist ein Fehler aufgetreten");
-         */
+
         //=====================================================================
         // Logger finish
         // =====================================================================

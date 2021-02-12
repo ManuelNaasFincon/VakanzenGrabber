@@ -21,6 +21,7 @@ public class DatenbankVerwalten {
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);
+            conn.setAutoCommit(false);
         } catch (SQLException e) {
             ExtendetLogger.LogEntry(LogStatus.ERROR, "Failed to connect to Database - " + url);
         }
@@ -77,10 +78,7 @@ public class DatenbankVerwalten {
     }
     // Inserat in Tabelle einfügen
     public static void insertIntoSQLite(Inserat piInserat, Connection pConnection, String pstrTabellenname, int pintID) {
-
-
         //String sql = "INSERT INTO "+ pstrTabellenname +" (" + Inserat.getSQLiteSpalten() + ") VALUES(" + piInserat.getInseratStringSQLite() + ")";
-
         //
         String[] strsplittedValues = piInserat.getInseratStringSQLite().split("\",\"");
         // Prepared Statement wird angelegt
@@ -156,7 +154,7 @@ public class DatenbankVerwalten {
 
         // Unions werden verkettet
         for (String strTabelle : listTabellenNamen) {
-            String strTabellenSelect = "SELECT " + "*" + " FROM " + strTabelle;
+            String strTabellenSelect = "SELECT NULL," + Inserat.getSQLiteSpalten() + " FROM " + strTabelle;
             if (blnFirstSelect)
                 strUNIONS = strTabellenSelect;
             else
